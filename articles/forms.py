@@ -7,10 +7,10 @@ class ReviewForm(forms.ModelForm):
         model = Review
         exclude = ('user',)
         labels = {
-            'title':'제목',
-            'content' : '내용',
+            'title': '제목',
+            'content': '내용',
             'movie_name': '영화제목',
-            'grade' : '평점'
+            'grade': '평점'
         }
 
 class CommentForm(forms.ModelForm):
@@ -19,5 +19,5 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ('content',)
         labels = {
-            'content' : '내용',
+            'content': '내용',
         }
