@@ -5,14 +5,17 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+
+
 # Create your views here.
-def index(request):
-    return render(request, 'accounts/index.html')
-
-
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect('articles:index')
+    
     if request.method == 'POST':
         form = SignupForm(request.POST)
+        
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
@@ -20,8 +23,9 @@ def signup(request):
 
     else:
         form = SignupForm()
+
     context = {
-        'form' : form
+        'form' : form,
     }
 
     return render(request,'accounts/signup.html',context)
@@ -53,21 +57,30 @@ def logout(request):
         return redirect('articles:index')
 
     auth_logout(request)
+
     return redirect('articles:index')
 
 
 def detail(reqeust, user_pk):
     user = get_user_model().objects.get(pk=user_pk)
+    reviews = user.review_set.all()
+    comments = user.comment_set.all()
 
     context = {
         'user': user,
+        'reviews': reviews,
+        'comments': comments,
     }
 
     return render(reqeust, 'accounts/detail.html', context)
 
 
+@login_required
 def update(request, user_pk):
     user = get_user_model().objects.get(pk=user_pk)
+
+    if request.user != user:
+        return redirect('articles:index')
 
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, instance=user)
@@ -85,21 +98,30 @@ def update(request, user_pk):
 
     return render(request, 'accounts/update.html', context)
 
+
+@login_required
 def password(request):
     if request.method=='POST':
-        form = PasswordChangeForm(request.user,request.POST )
+        form = PasswordChangeForm(request.user, request.POST)
+
         if form.is_valid():
             form.save()
             update_session_auth_hash(request, form.user)
             return redirect('accounts:detail', request.user.pk)
+    
     else:
         form = PasswordChangeForm(request.user)
+    
     context = {
         'form' : form,
     }
+    
     return render(request, 'accounts/password.html', context)
 
+
+@login_required
 def delete(request):
     request.user.delete()
     auth_logout(request)
+
     return redirect('articles:index')
