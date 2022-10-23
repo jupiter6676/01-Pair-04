@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg bg-light sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'articles:index' %}">LOGO</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,8 +78,9 @@
             <option value="title__contains">리뷰제목</option>
             {% comment %} <option value="user__contains">작성자</option> {% endcomment %}
           </select>
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name='search'>
-          <button class="btn btn-outline-success" type="submit">Search</button>
+
+          <input class="form-control mx-2" type="search" placeholder="Search" aria-label="Search" name='search'>
+          <button class="btn btn-success" type="submit">Search</button>
         </form>
       </div>
     </div>
